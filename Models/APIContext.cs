@@ -10,5 +10,21 @@ namespace initsplace.Models
     {
         public APIContext(DbContextOptions<APIContext> options) : base(options) { }
         public DbSet<Container> Container { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<ItemField>()
+                .HasKey(t => new { t.ItemId, t.FieldId });
+
+            modelBuilder.Entity<ItemField>()
+                .HasOne(pt => pt.Item)
+                .WithMany(p => p.ItemFields)
+                .HasForeignKey(pt => pt.ItemId);
+
+            modelBuilder.Entity<ItemField>()
+                .HasOne(pt => pt.Field)
+                .WithMany(t => t.ItemFields)
+                .HasForeignKey(pt => pt.FieldId);
+        }
     }
 }

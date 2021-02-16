@@ -5,11 +5,11 @@ using System.Threading.Tasks;
 
 namespace initsplace.Models
 {
-    public class Container
+    public class Field
     {
         public int Id { get; set; }
-        public Container Parent { get; set; }
         public string Name { get; set; }
-        public List<Item> Items { get; set; }
+        public string Type { get; set; }
+        public List<ItemField> ItemFields { get; set; }
     }
 }

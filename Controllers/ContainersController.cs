@@ -21,17 +21,19 @@ namespace initsplace.Controllers
         }
 
         // GET: api/Containers
+        //TODO - Doesn't handle a container nested in itself
+        //TODO - Just returns too much data in general, make this a manual tree traversal.
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Container>>> GetContainer()
         {
-            return await _context.Container.ToListAsync();
+            return await _context.Container.Include(c=>c.Parent).ToListAsync();
         }
 
         // GET: api/Containers/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Container>> GetContainer(int id)
         {
-            var container = await _context.Container.FindAsync(id);
+            var container = await _context.Container.Include(c => c.Parent).FirstOrDefaultAsync(c => c.Id == id);
 
             if (container == null)
             {
@@ -42,13 +44,24 @@ namespace initsplace.Controllers
         }
 
         // PUT: api/Containers/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutContainer(int id, Container container)
+        public async Task<IActionResult> PutContainer(int id, string name=null, int parentId=-1)
         {
-            if (id != container.Id)
+            var container = await _context.Container.Include(c=>c.Parent).FirstOrDefaultAsync(c=>c.Id==id);
+
+            if (!string.IsNullOrEmpty(name))
             {
-                return BadRequest();
+                container.Name = name;
+            }
+
+            if(parentId >0)
+            {
+                var parentContainer = await _context.Container.FindAsync(parentId);
+                container.Parent = parentContainer;
+            }
+            else
+            {
+                container.Parent = null;
             }
 
             _context.Entry(container).State = EntityState.Modified;
@@ -73,10 +86,26 @@ namespace initsplace.Controllers
         }
 
         // POST: api/Containers
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Container>> PostContainer(Container container)
+        public async Task<ActionResult<Container>> PostContainer(string name, int parentId = -1)
         {
+            if(string.IsNullOrEmpty(name))
+            {
+                return BadRequest();
+            }
+
+            Container container;
+
+            if (parentId > 0)
+            {
+                Container parentContainer = await _context.Container.FindAsync(parentId);
+                container = new Container(name, parentContainer);
+            }
+            else
+            {
+                container = new Container(name);
+            }
+
             _context.Container.Add(container);
             await _context.SaveChangesAsync();
 
@@ -84,6 +113,7 @@ namespace initsplace.Controllers
         }
 
         // DELETE: api/Containers/5
+        //TODO - Need to empty a container before deleting
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteContainer(int id)
         {

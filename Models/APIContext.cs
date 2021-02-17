@@ -10,6 +10,10 @@ namespace initsplace.Models
     {
         public APIContext(DbContextOptions<APIContext> options) : base(options) { }
         public DbSet<Container> Container { get; set; }
+        public DbSet<Item> Item { get; set; }
+        public DbSet<ItemField> ItemField { get; set; }
+        public DbSet<Field> Field { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

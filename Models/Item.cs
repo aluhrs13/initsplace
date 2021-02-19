@@ -11,5 +11,16 @@ namespace initsplace.Models
         public Container Parent { get; set; }
         public string Name { get; set; }
         public List<ItemField> ItemFields { get; set; }
+
+        public Item()
+        {
+
+        }
+
+        public Item(string name, Container parent)
+        {
+            Parent = parent;
+            Name = name;
+        }
     }
 }

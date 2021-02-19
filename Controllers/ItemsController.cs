@@ -28,10 +28,11 @@ namespace initsplace.Controllers
         }
 
         // GET: api/Items/5
+        // TODO - This should be better
         [HttpGet("{id}")]
         public async Task<ActionResult<Item>> GetItem(int id)
         {
-            var item = await _context.Item.FindAsync(id);
+            var item = await _context.Item.FirstOrDefaultAsync(c => c.Id == id);
 
             if (item == null)
             {
@@ -42,13 +43,21 @@ namespace initsplace.Controllers
         }
 
         // PUT: api/Items/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        // TODO - This won't remove a parent
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutItem(int id, Item item)
+        public async Task<IActionResult> PutItem(int id, string name = null, int parentId = -1)
         {
-            if (id != item.Id)
+            var item = await _context.Item.Include(c => c.Parent).FirstOrDefaultAsync(c => c.Id == id);
+
+            if (!string.IsNullOrEmpty(name))
             {
-                return BadRequest();
+                item.Name = name;
+            }
+
+            if (parentId > 0)
+            {
+                var parentContainer = await _context.Container.FindAsync(parentId);
+                item.Parent = parentContainer;
             }
 
             _context.Entry(item).State = EntityState.Modified;
@@ -75,8 +84,17 @@ namespace initsplace.Controllers
         // POST: api/Items
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Item>> PostItem(Item item)
+        public async Task<ActionResult<Item>> PostItem(string name, int parentId)
         {
+            if (string.IsNullOrEmpty(name))
+            {
+                return BadRequest();
+            }
+ 
+            Container parentContainer = await _context.Container.FirstOrDefaultAsync(c => c.Id == parentId);
+
+            Item item = new Item(name, parentContainer);
+
             _context.Item.Add(item);
             await _context.SaveChangesAsync();
 

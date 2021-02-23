@@ -45,16 +45,32 @@ namespace initsplace.Controllers
         // GET: api/Items/5
         // TODO - This should be better
         [HttpGet("{id}")]
-        public async Task<ActionResult<Item>> GetItem(int id)
+        public async Task<ActionResult> GetItem(int id)
         {
-            var item = await _context.Item.FirstOrDefaultAsync(c => c.Id == id);
+            var item = await _context.Item.Include(i=>i.Parent).FirstOrDefaultAsync(c => c.Id == id);
 
             if (item == null)
             {
                 return NotFound();
             }
 
-            return item;
+            if (item.Parent == null)
+            {
+                return Ok(new
+                {
+                    Name = item.Name,
+                    Parent = ""
+                });
+            }
+            else
+            {
+                return Ok(new
+                {
+                    Name = item.Name,
+                    Parent = new { id = item.Parent.Id, name = item.Parent.Name }
+                });
+            }
+
         }
 
         // PUT: api/Items/5

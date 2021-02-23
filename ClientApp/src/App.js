@@ -10,6 +10,7 @@ import Layout from "./components/Layout";
 
 import "./custom.css";
 import BrowseContainer from "./pages/BrowseContainer";
+import ViewItem from "./pages/ViewItem";
 
 export default class App extends Component {
     static displayName = App.name;
@@ -22,6 +23,7 @@ export default class App extends Component {
                     path="/Container/:id"
                     component={withRouter(BrowseContainer)}
                 />
+                <Route path="/Item/:id" component={withRouter(ViewItem)} />
             </Layout>
         );
     }

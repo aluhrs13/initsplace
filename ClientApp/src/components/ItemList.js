@@ -14,7 +14,7 @@ const useStyles = makeStyles({
     table: {},
 });
 
-export default function ContainerList(props) {
+export default function ItemList(props) {
     const classes = useStyles();
     //TODO - rows load and empty states
     const [rows, setRows] = useState();
@@ -43,23 +43,18 @@ export default function ContainerList(props) {
                 <TableHead>
                     <TableRow>
                         <TableCell>ID</TableCell>
-                        <TableCell>Container</TableCell>
+                        <TableCell>Item</TableCell>
                     </TableRow>
                 </TableHead>
                 {rows ? (
                     <TableBody>
                         {rows.length > 0 ? (
                             rows.map((row) => (
-                                <TableRow
-                                    key={row.id}
-                                    component="a"
-                                    href={"Item/" + row.id}
-                                >
+                                <TableRow key={row.id}>
                                     <TableCell component="th" scope="row">
                                         {row.id}
                                     </TableCell>
                                     <TableCell>
-                                        {" "}
                                         <RouterLink to={"/Item/" + row.id}>
                                             {row.name}
                                         </RouterLink>

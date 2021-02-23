@@ -41,10 +41,10 @@ export default function BrowseContainer(props) {
                 <Grid item xs={12}>
                     {parent ? (
                         <RouterLink to={"/Container/" + parent.id}>
-                            {parent.name}
+                            ^ {parent.name}
                         </RouterLink>
                     ) : (
-                        <RouterLink to={"/"}>Home</RouterLink>
+                        <RouterLink to={"/"}>^ Home</RouterLink>
                     )}
                     <h1>{title}</h1>
                 </Grid>

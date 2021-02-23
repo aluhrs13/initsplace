@@ -24,7 +24,22 @@ namespace initsplace.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Item>>> GetItem()
         {
-            return await _context.Item.ToListAsync();
+            return await _context.Item.Where(i=>i.Parent==null).ToListAsync();
+        }
+
+        // GET: api/Items/in/5
+        // ID IS THE CONTAINER ID
+        [HttpGet("in/{parentId}")]
+        public async Task<ActionResult<IEnumerable<Item>>> GetItemsInContainer(int parentId)
+        {
+            var item = await _context.Item.Where(i => i.Parent.Id == parentId).ToListAsync();
+
+            if (item == null)
+            {
+                return NotFound();
+            }
+
+            return item;
         }
 
         // GET: api/Items/5

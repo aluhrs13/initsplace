@@ -1,6 +1,6 @@
 //global imports
 import React, { Component } from "react";
-import { Route } from "react-router";
+import { Route, withRouter } from "react-router-dom";
 
 //3p imports
 
@@ -9,6 +9,7 @@ import Home from "./pages/Home";
 import Layout from "./components/Layout";
 
 import "./custom.css";
+import BrowseContainer from "./pages/BrowseContainer";
 
 export default class App extends Component {
     static displayName = App.name;
@@ -17,6 +18,10 @@ export default class App extends Component {
         return (
             <Layout>
                 <Route exact path="/" component={Home} />
+                <Route
+                    path="/Container/:id"
+                    component={withRouter(BrowseContainer)}
+                />
             </Layout>
         );
     }

@@ -31,9 +31,9 @@ namespace initsplace.Controllers
 
         // GET: api/Containers/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Container>> GetContainer(int id)
+        public async Task<ActionResult<IEnumerable<Container>>> GetContainer(int id)
         {
-            var container = await _context.Container.Include(c => c.Parent).FirstOrDefaultAsync(c => c.Id == id);
+            var container = await _context.Container.Include(c => c.Parent).Where(c => c.Parent.Id == id).ToListAsync();
 
             if (container == null)
             {
@@ -41,6 +41,31 @@ namespace initsplace.Controllers
             }
 
             return container;
+        }
+
+        // GET: api/Containers/details/5
+        [HttpGet("details/{id}")]
+        public async Task<IActionResult> GetContainerDetails(int id)
+        {
+            var currentContainer = await _context.Container.Include(c => c.Parent).FirstOrDefaultAsync(c => c.Id == id);
+
+            if (currentContainer.Parent == null)
+            {
+                return Ok(new
+                {
+                    Name = currentContainer.Name,
+                    Parent = ""
+                });
+            }
+            else
+            {
+                return Ok(new
+                {
+                    Name = currentContainer.Name,
+                    Parent = new { id = currentContainer.Parent.Id, name = currentContainer.Parent.Name }
+                });
+            }
+
         }
 
         // PUT: api/Containers/5

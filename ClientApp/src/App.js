@@ -5,9 +5,8 @@ import { Route } from "react-router";
 //3p imports
 
 //local imports
-import { Home } from "./pages/Home";
-import { Layout } from "./components/Layout";
-import { FetchData } from "./components/FetchData";
+import Home from "./pages/Home";
+import Layout from "./components/Layout";
 
 import "./custom.css";
 
@@ -18,7 +17,6 @@ export default class App extends Component {
         return (
             <Layout>
                 <Route exact path="/" component={Home} />
-                <Route path="/fetch-data" component={FetchData} />
             </Layout>
         );
     }

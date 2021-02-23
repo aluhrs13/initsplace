@@ -26,7 +26,7 @@ namespace initsplace.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Container>>> GetContainer()
         {
-            return await _context.Container.Include(c=>c.Parent).ToListAsync();
+            return await _context.Container.Include(c=>c.Parent).Where(c=>c.Parent==null).ToListAsync();
         }
 
         // GET: api/Containers/5

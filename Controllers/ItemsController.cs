@@ -129,7 +129,7 @@ namespace initsplace.Controllers
             _context.Item.Add(item);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetItem", new { id = item.Id }, item);
+            return CreatedAtAction("GetItem", new { id = item.Id });
         }
 
         // DELETE: api/Items/5

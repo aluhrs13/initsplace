@@ -35,7 +35,7 @@ export default function ContainerList(props) {
 
             setRows(data);
         });
-    }, [props.containerId]);
+    }, [props.containerId, props.refreshCount]);
 
     return (
         <TableContainer component={Paper}>

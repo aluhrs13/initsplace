@@ -9,7 +9,7 @@ import Home from "./pages/Home";
 import Layout from "./components/Layout";
 
 import "./custom.css";
-import BrowseContainer from "./pages/BrowseContainer";
+import ViewContainer from "./pages/ViewContainer";
 import ViewItem from "./pages/ViewItem";
 
 export default class App extends Component {
@@ -21,7 +21,7 @@ export default class App extends Component {
                 <Route exact path="/" component={Home} />
                 <Route
                     path="/Container/:id"
-                    component={withRouter(BrowseContainer)}
+                    component={withRouter(ViewContainer)}
                 />
                 <Route path="/Item/:id" component={withRouter(ViewItem)} />
             </Layout>

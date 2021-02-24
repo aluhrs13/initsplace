@@ -3,8 +3,8 @@ import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 import ItemList from "../components/ItemList";
 import ContainerList from "../components/ContainerList";
-import AddContainerButton from "../components/AddContainerButton";
-import AddItemButton from "../components/AddItemButton";
+import AddContainerModal from "../components/AddContainerModal";
+import AddItemModal from "../components/AddItemModal";
 import axios from "axios";
 import { Link as RouterLink } from "react-router-dom";
 
@@ -17,6 +17,7 @@ const useStyles = makeStyles((theme) => ({
 export default function BrowseContainer(props) {
     const containerId = props.match.params.id;
     const classes = useStyles();
+    const [refreshCount, incrementRefresh] = useState(0);
     const [title, setTitle] = useState("Unknown");
     const [parent, setParent] = useState();
 
@@ -35,6 +36,10 @@ export default function BrowseContainer(props) {
         });
     }, [containerId]);
 
+    function handler() {
+        incrementRefresh(refreshCount + 1);
+    }
+
     return (
         <div className={classes.root}>
             <Grid container spacing={3}>
@@ -51,14 +56,23 @@ export default function BrowseContainer(props) {
 
                 <Grid item xs={12}>
                     <h2>Items</h2>
-                    <ItemList containerId={containerId} />
-                    <AddItemButton />
+                    <ItemList
+                        containerId={containerId}
+                        refreshCount={refreshCount}
+                    />
+                    <AddItemModal containerId={containerId} action={handler} />
                 </Grid>
 
                 <Grid item xs={12}>
                     <h2>Containers</h2>
-                    <ContainerList containerId={containerId} />
-                    <AddContainerButton />
+                    <ContainerList
+                        containerId={containerId}
+                        refreshCount={refreshCount}
+                    />
+                    <AddContainerModal
+                        containerId={containerId}
+                        action={handler}
+                    />
                 </Grid>
             </Grid>
         </div>

@@ -22,23 +22,25 @@ namespace initsplace.Controllers
 
         // GET: api/ItemFields
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ItemField>>> GetItemField()
+        public async Task<ActionResult<IEnumerable<Field>>> GetItemField()
         {
-            return await _context.ItemField.ToListAsync();
+            return await _context.Field.ToListAsync();
         }
 
         // GET: api/ItemFields/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<ItemField>> GetItemField(int id)
+        public async Task<ActionResult> GetItemField(int id)
         {
-            var itemField = await _context.ItemField.FindAsync(id);
+            var itemField = await _context.ItemField.Where(i=>i.ItemId==id).Include(i=>i.Field).ToListAsync();
+
+            var trimmed = itemField.Select(i => new { FieldId=i.FieldId, Name = i.Field.Name, Value = i.Value }).ToList();
 
             if (itemField == null)
             {
                 return NotFound();
             }
 
-            return itemField;
+            return Ok(trimmed);
         }
 
         // PUT: api/ItemFields/5
@@ -75,16 +77,18 @@ namespace initsplace.Controllers
         // POST: api/ItemFields
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<ItemField>> PostItemField(ItemField itemField)
+        public async Task<ActionResult<ItemField>> PostItemField(int fieldId, int itemId, string value)
         {
-            _context.ItemField.Add(itemField);
+            ItemField newItemField = new ItemField(fieldId, itemId, value);
+
+            _context.ItemField.Add(newItemField);
             try
             {
                 await _context.SaveChangesAsync();
             }
             catch (DbUpdateException)
             {
-                if (ItemFieldExists(itemField.ItemId))
+                if (ItemFieldExists(newItemField.ItemId))
                 {
                     return Conflict();
                 }
@@ -94,7 +98,7 @@ namespace initsplace.Controllers
                 }
             }
 
-            return CreatedAtAction("GetItemField", new { id = itemField.ItemId }, itemField);
+            return CreatedAtAction("GetItemField", new { value = newItemField.Value });
         }
 
         // DELETE: api/ItemFields/5

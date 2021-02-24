@@ -15,5 +15,12 @@ namespace initsplace.Models
         public Field Field { get; set; }
 
         public string Value { get; set; }
+
+        public ItemField(int fieldId, int itemId, string value)
+        {
+            ItemId = itemId;
+            FieldId = fieldId;
+            Value = value;
+        }
     }
 }

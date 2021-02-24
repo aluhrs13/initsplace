@@ -41,7 +41,7 @@ export default function AddItemModal(props) {
         axios.post(baseUrl).then(({ data }) => {
             setName();
             handleClose();
-            props.action();
+            props.refreshParent();
         });
 
         e.preventDefault();

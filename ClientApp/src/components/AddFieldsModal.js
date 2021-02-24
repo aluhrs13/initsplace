@@ -32,45 +32,46 @@ const useStyles = makeStyles((theme) => ({
 
 export default function AddFieldsModal(props) {
     const classes = useStyles();
+    //Controls the modal open/close state
     const [open, setOpen] = useState(false);
-    const [name, setName] = useState([]);
+    //An array of the values of each unused field
+    const [fieldValues, setFieldValues] = useState([]);
+    //List of possible fields
     const [fieldList, setFieldList] = useState("");
 
     const addMoreItem = (fieldId, newValue) => {
-        var newarr = name;
+        var newarr = fieldValues;
         newarr[fieldId] = newValue;
-        setName(newarr);
+        setFieldValues(newarr);
     };
 
+    //On load, get the list of possible fields.
     useEffect(() => {
         var baseUrl = `https://localhost:5001/api/ItemFields/`;
 
         axios.get(baseUrl).then(({ data }) => {
-            console.log("----------");
-            console.log("FieldList:");
-            console.log(data);
-            console.log("----------");
-
             setFieldList(data);
         });
     }, []);
 
     const handleSubmit = (e) => {
-        //TODO - Iterate through name and submit the form for each of them. Index value is the fieldId
         var baseUrl =
             `https://localhost:5001/api/ItemFields?itemId=` + props.itemId;
 
-        name.map((fieldChanged, index) =>
+        //Iterate through each changed field and POST the creation
+        fieldValues.map((fieldChanged, index) =>
             axios
                 .post(baseUrl + "&fieldId=" + index + "&value=" + fieldChanged)
                 .then(({ data }) => {})
         );
 
+        //Refresh parent, close modal, prevent refresh
         props.action();
         handleClose();
         e.preventDefault();
     };
 
+    //Open/close modals
     const handleOpen = () => {
         setOpen(true);
     };
@@ -88,6 +89,7 @@ export default function AddFieldsModal(props) {
                 }}
             >
                 {fieldList.length > 0 && props.usedFields ? (
+                    //If there's fields available make TextFields for all the unused ones
                     fieldList.map((row) =>
                         props.usedFields.some(
                             (item) => item.fieldId === row.id

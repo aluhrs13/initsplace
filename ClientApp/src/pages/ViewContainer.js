@@ -7,6 +7,7 @@ import AddContainerModal from "../components/AddContainerModal";
 import AddItemModal from "../components/AddItemModal";
 import axios from "axios";
 import { Link as RouterLink } from "react-router-dom";
+import Typography from "@material-ui/core/Typography";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -36,7 +37,7 @@ export default function BrowseContainer(props) {
         });
     }, [containerId]);
 
-    function handler() {
+    function refreshTables() {
         incrementRefresh(refreshCount + 1);
     }
 
@@ -51,27 +52,34 @@ export default function BrowseContainer(props) {
                     ) : (
                         <RouterLink to={"/"}>^ Home</RouterLink>
                     )}
-                    <h1>{title}</h1>
+                    <Typography variant="h4" gutterBottom>
+                        {title}
+                    </Typography>
                 </Grid>
-
-                <Grid item xs={12}>
-                    <h2>Items</h2>
-                    <ItemList
-                        containerId={containerId}
-                        refreshCount={refreshCount}
-                    />
-                    <AddItemModal containerId={containerId} action={handler} />
-                </Grid>
-
-                <Grid item xs={12}>
-                    <h2>Containers</h2>
+                <Grid item xs={3}>
+                    <Typography variant="h5" gutterBottom>
+                        Containers
+                    </Typography>
                     <ContainerList
                         containerId={containerId}
                         refreshCount={refreshCount}
                     />
                     <AddContainerModal
                         containerId={containerId}
-                        action={handler}
+                        refreshParent={refreshTables}
+                    />
+                </Grid>
+                <Grid item xs={9}>
+                    <Typography variant="h5" gutterBottom>
+                        Items
+                    </Typography>
+                    <ItemList
+                        containerId={containerId}
+                        refreshCount={refreshCount}
+                    />
+                    <AddItemModal
+                        containerId={containerId}
+                        refreshParent={refreshTables}
                     />
                 </Grid>
             </Grid>

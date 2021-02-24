@@ -8,6 +8,7 @@ import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
 import axios from "axios";
 import AddFieldsModal from "../components/AddFieldsModal";
+import Typography from "@material-ui/core/Typography";
 
 const useStyles = makeStyles({
     table: {},
@@ -23,11 +24,6 @@ export default function FieldList(props) {
         var baseUrl = `https://localhost:5001/api/ItemFields/` + props.itemId;
 
         axios.get(baseUrl).then(({ data }) => {
-            console.log("----------");
-            console.log("Field List:");
-            console.log(data);
-            console.log("----------");
-
             setRows(data);
         });
     }, [props.itemId, refreshCount]);
@@ -52,11 +48,37 @@ export default function FieldList(props) {
                                     </TableRow>
                                 ))
                             ) : (
-                                <div>No items here, add one below!</div>
+                                <TableRow key="0">
+                                    <TableCell align="center">
+                                        <Typography variant="h4" gutterBottom>
+                                            No fields here, add one below!
+                                        </Typography>
+                                        <Typography
+                                            variant="overline"
+                                            display="block"
+                                            gutterBottom
+                                        >
+                                            No rows returned{" "}
+                                        </Typography>
+                                    </TableCell>
+                                </TableRow>
                             )}
                         </TableBody>
                     ) : (
-                        <></>
+                        <TableRow key="0">
+                            <TableCell>
+                                <Typography variant="h4" gutterBottom>
+                                    No items here, add one below!
+                                </Typography>
+                                <Typography
+                                    variant="overline"
+                                    display="block"
+                                    gutterBottom
+                                >
+                                    Rows is null
+                                </Typography>
+                            </TableCell>
+                        </TableRow>
                     )}
                 </Table>
             </TableContainer>

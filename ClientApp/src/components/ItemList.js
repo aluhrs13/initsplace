@@ -6,6 +6,7 @@ import TableCell from "@material-ui/core/TableCell";
 import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
+import Typography from "@material-ui/core/Typography";
 import Paper from "@material-ui/core/Paper";
 import axios from "axios";
 import { Link as RouterLink } from "react-router-dom";
@@ -23,16 +24,10 @@ export default function ItemList(props) {
         var baseUrl = `https://localhost:5001/api/Items`;
 
         if (props.containerId) {
-            console.log("Items got an id of " + props.containerId);
             baseUrl = baseUrl + "/in/" + props.containerId;
         }
 
         axios.get(baseUrl).then(({ data }) => {
-            console.log("----------");
-            console.log("Item List:");
-            console.log(data);
-            console.log("----------");
-
             setRows(data);
         });
     }, [props.containerId, props.refreshCount]);
@@ -42,18 +37,14 @@ export default function ItemList(props) {
             <Table className={classes.table} aria-label="simple table">
                 <TableHead>
                     <TableRow>
-                        <TableCell>ID</TableCell>
                         <TableCell>Item</TableCell>
                     </TableRow>
                 </TableHead>
-                {rows ? (
-                    <TableBody>
-                        {rows.length > 0 ? (
+                <TableBody>
+                    {rows ? (
+                        rows.length > 0 ? (
                             rows.map((row) => (
                                 <TableRow key={row.id}>
-                                    <TableCell component="th" scope="row">
-                                        {row.id}
-                                    </TableCell>
                                     <TableCell>
                                         <RouterLink to={"/Item/" + row.id}>
                                             {row.name}
@@ -62,12 +53,38 @@ export default function ItemList(props) {
                                 </TableRow>
                             ))
                         ) : (
-                            <div>No items here, add one below!</div>
-                        )}
-                    </TableBody>
-                ) : (
-                    <div>No Items Found</div>
-                )}
+                            <TableRow key="0">
+                                <TableCell align="center">
+                                    <Typography variant="h4" gutterBottom>
+                                        No items here, add one below!
+                                    </Typography>
+                                    <Typography
+                                        variant="overline"
+                                        display="block"
+                                        gutterBottom
+                                    >
+                                        No rows returned
+                                    </Typography>
+                                </TableCell>
+                            </TableRow>
+                        )
+                    ) : (
+                        <TableRow key="0">
+                            <TableCell>
+                                <Typography variant="h4" gutterBottom>
+                                    No items here, add one below!
+                                </Typography>
+                                <Typography
+                                    variant="overline"
+                                    display="block"
+                                    gutterBottom
+                                >
+                                    Rows is null
+                                </Typography>
+                            </TableCell>
+                        </TableRow>
+                    )}
+                </TableBody>
             </Table>
         </TableContainer>
     );

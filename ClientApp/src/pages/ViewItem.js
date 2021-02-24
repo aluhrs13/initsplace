@@ -22,11 +22,6 @@ export default function BrowseContainer(props) {
         var baseUrl = `https://localhost:5001/api/Items/` + itemId;
 
         axios.get(baseUrl).then(({ data }) => {
-            console.log("----------");
-            console.log("Item Detail:");
-            console.log(data);
-            console.log("----------");
-
             setParent(data.parent);
             setTitle(data.name);
         });

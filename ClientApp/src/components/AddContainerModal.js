@@ -20,6 +20,7 @@ const useStyles = makeStyles((theme) => ({
     },
     buttonContainer: {},
     button: {
+        width: "100%",
         margin: theme.spacing(1),
         position: "relative",
         right: "0",
@@ -31,25 +32,32 @@ const useStyles = makeStyles((theme) => ({
 
 export default function AddContainerModal(props) {
     const classes = useStyles();
+    //Controls modal open or closed
     const [open, setOpen] = useState(false);
+    //Keeps the state of the name form field
     const [name, setName] = useState();
 
+    //POST the container creation
     const handleSubmit = (e) => {
         var baseUrl = `https://localhost:5001/api/Containers/?&name=` + name;
 
+        //If we're in the page for a container, make this container under it.
         if (props.containerId) {
             baseUrl = baseUrl + `&parentId=` + props.containerId;
         }
 
         axios.post(baseUrl).then(({ data }) => {
+            //Once complete, reset the Name field, close modal, and
             setName();
             handleClose();
-            props.action();
+            props.refreshParent();
         });
 
+        //Prevent page navigation
         e.preventDefault();
     };
 
+    //Open and close events for the modal
     const handleOpen = () => {
         setOpen(true);
     };
@@ -58,6 +66,7 @@ export default function AddContainerModal(props) {
         setOpen(false);
     };
 
+    //Modal body
     const body = (
         <div className={classes.paper}>
             <h2 id="simple-modal-title">Add New Container</h2>
@@ -90,7 +99,7 @@ export default function AddContainerModal(props) {
     return (
         <div>
             <Button
-                variant="contained"
+                variant="outlined"
                 color="primary"
                 className={classes.button}
                 startIcon={<AddIcon />}
